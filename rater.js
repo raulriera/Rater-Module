@@ -1,40 +1,48 @@
-// RATER MODULE for Appcelerator Titanium
-/*
-WHAT IS IT:
-Create a cycling reminder to go rate your app at the App Store. Tracks 
-the app launch count, and reminds the user every 20 launches (configurable) to 
-rate the app, with a click to launch the app page in the App Store.
-
-Reminders stop if the user clicks the "Rate Now" or "Don't Remind Me" options.
-
-USAGE:
-In your app.js (or elsewhere), call:
-	Ti.include("rater.js");
-	Rater.init("[Your app name]","[Your app's App Store ID]");
-	Rater.run();
+/* RATER MODULE for Appcelerator Titanium
 
 ABOUT:
 Created by Greg Pierce, http://agiletortoise.com
 Modified by Raul Riera, http://raulriera.com
-
-LOCALIZATION:
-<string name="rating_title">Feedback</string>
-<string name="rating_message">Thank you for using this application, it would mean a lot to us if you took a minute to rate us at the App Store!.</string>
-<string name="rating_option_1">Rate now</string>
-<string name="rating_option_2">Don't remind me again</string>
-<string name="rating_option_3">Not now</string>
 
 */
 
 var Rater = {
 	appName:'',
 	appId:'',
-	interval: 20
+	appLaunches: 20,
+	appUsageInSeconds: 0 // 0 if you don't want to use this
 };
 
 Rater.data = {
-	launchCount:0,
-	neverRemind:false
+	launchCount: 0,
+	timeUsed: 0,
+	neverRemind: false
+};
+
+Rater.startUsageTimer = function(){
+	Rater.usageTimerInterval = setInterval(function() {
+	    Rater.data.timeUsed++;
+	    
+	    // Check if the desired usage time has been reached
+	    if(Rater.data.timeUsed === Rater.appUsageInSeconds) {
+	    	// Pause the timer
+	    	Rater.pauseUsageTimer();
+	    	// Open the rating dialog
+	    	Rater.openRateDialog();
+	    }                    
+	},1000);
+};
+
+Rater.pauseUsageTimer = function(){
+	clearInterval(Rater.usageTimerInterval);
+}
+
+Rater.initUsageCounter = function() {
+	// Check if the user wants to use this feature
+	if (Rater.appUsageInSeconds > 0) {
+		
+		Rater.startUsageTimer();
+	}
 };
 
 Rater.load = function() {
@@ -42,21 +50,31 @@ Rater.load = function() {
 	if(prop) {
 		Rater.data = JSON.parse(prop);
 	}
+	
+	// Increase the launche count
 	Rater.data.launchCount++;
+	
+	// Init the usage counter
+	Rater.initUsageCounter();
+	
+	// Save the data
 	Rater.save();
 };
+
 Rater.save = function() {
 	Ti.App.Properties.setString("RaterData", JSON.stringify(Rater.data));
 };
-Rater.message = function() {
-	var msg = L("rating_message");
-	return msg;
-};
+
 Rater.run = function() {
-	if(Rater.data.neverRemind || Rater.data.launchCount % Rater.interval != 0) { return; }
+	if(Rater.data.neverRemind || Rater.data.launchCount % Rater.appLaunches != 0) { return; }
+	
+	Rater.openRateDialog();
+};
+
+Rater.openRateDialog = function() {
 	var a = Ti.UI.createAlertDialog({
 		title: L("rating_title"),
-		message:Rater.message(),
+		message: L("rating_message"),
 		buttonNames:[L("rating_option_1"), L("rating_option_2"), L("rating_option_3")],
 		cancel:2
 	});
@@ -74,10 +92,16 @@ Rater.run = function() {
 		}
 	});
 	a.show();
-};
+}
 
-Rater.init = function(_appName, _appId) {
+Rater.init = function(_appName, _appId, _appLaunches, _appUsageInSeconds) {
 	Rater.load();
+	
+	// Set the default values
 	Rater.appName = _appName;
 	Rater.appId = _appId;
+	Rater.appLaunches = _appLaunches;
+	Rater.appUsageInSeconds = _appUsageInSeconds;
+	
+	Rater.run();
 };
