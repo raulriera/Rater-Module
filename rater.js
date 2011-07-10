@@ -10,7 +10,7 @@ var Rater = {
 	appName:'',
 	appId:'',
 	appLaunches: 20,
-	appUsageInSeconds: 30 // 0 if you don't want to use this
+	appUsageInSeconds: 0 // 0 if you don't want to use this
 };
 
 Rater.data = {
