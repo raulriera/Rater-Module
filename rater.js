@@ -1,14 +1,16 @@
-/* RATER MODULE for Appcelerator Titanium
+/* 
 
-ABOUT:
+Rater Module for Appcelerator Titanium
+
+About:
 Created by Greg Pierce, http://agiletortoise.com
 Modified by Raul Riera, http://raulriera.com
 
 */
 
 var Rater = {
-	appName:'',
-	appId:'',
+	appName: '',
+	appId: '',
 	appLaunches: 20,
 	appUsageInSeconds: 0 // 0 if you don't want to use this
 };
@@ -24,7 +26,7 @@ Rater.startUsageTimer = function(){
 	    Rater.data.timeUsed++;
 	    
 	    // Debugging
-	    // Ti.API.info(Rater.data.timeUsed + "seconds of app usage");
+	    // Ti.API.info(Rater.data.timeUsed + " seconds of app usage");
 	    
 	    // Check if the desired usage time has been reached
 	    if(Rater.data.timeUsed === Rater.appUsageInSeconds) {
@@ -33,22 +35,21 @@ Rater.startUsageTimer = function(){
 	    	// Open the rating dialog
 	    	Rater.openRateDialog();
 	    }                    
-	},1000);
+	}, 1000);
 };
 
 Rater.pauseUsageTimer = function(){
 	clearInterval(Rater.usageTimerInterval);
-}
+};
 
-Rater.initUsageCounter = function() {
+Rater.initUsageCounter = function(){
 	// Check if the user wants to use this feature
 	if (Rater.appUsageInSeconds > 0) {
-		
 		Rater.startUsageTimer();
 	}
 };
 
-Rater.load = function() {
+Rater.load = function(){
 	// Read the data
 	Rater.read();
 	
@@ -62,24 +63,24 @@ Rater.load = function() {
 	Rater.save();
 };
 
-Rater.read = function() {
+Rater.read = function(){
 	var prop = Ti.App.Properties.getString("RaterData", null);
 	if(prop) {
 		Rater.data = JSON.parse(prop);
 	}
-}
+};
 
-Rater.save = function() {
+Rater.save = function(){
 	Ti.App.Properties.setString("RaterData", JSON.stringify(Rater.data));
 };
 
-Rater.run = function() {
+Rater.run = function(){
 	if(Rater.data.neverRemind || Rater.data.launchCount % Rater.appLaunches != 0) { return; }
 	
 	Rater.openRateDialog();
 };
 
-Rater.openRateDialog = function() {
+Rater.openRateDialog = function(){
 	var a = Ti.UI.createAlertDialog({
 		title: L("rating_title"),
 		message: L("rating_message"),
@@ -100,9 +101,9 @@ Rater.openRateDialog = function() {
 		}
 	});
 	a.show();
-}
+};
 
-Rater.init = function(_appName, _appId) {
+Rater.init = function(_appName, _appId){
 	Rater.load();
 	
 	// Set the default values
@@ -112,13 +113,12 @@ Rater.init = function(_appName, _appId) {
 	Rater.run();
 };
 
-
-Ti.App.addEventListener('resumed',function(e){	
+Ti.App.addEventListener('resumed', function(e){	
 	// Read the data again
 	Rater.read();
 });
 
-Ti.App.addEventListener('pause',function(e){	
+Ti.App.addEventListener('pause', function(e){	
 	// Save the data
 	Rater.save();
 });
