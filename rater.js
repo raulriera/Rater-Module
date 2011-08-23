@@ -83,10 +83,11 @@ Rater.run = function(){
 Rater.openRateDialog = function(){
 	var a = Ti.UI.createAlertDialog({
 		title: L("rating_title"),
-		message: L("rating_message"),
+		message: String.format(L('rating_message'), Rater.appName),
 		buttonNames: [L("rating_option_1"), L("rating_option_2"), L("rating_option_3")],
 		cancel: 2
 	});
+	
 	a.addEventListener('click',function(e){
 		switch(e.index) {
 			case 0 : // rate

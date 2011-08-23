@@ -19,7 +19,7 @@ Modified by Raul Riera, http://raulriera.com
 Please follow Appcelerator's guidelines in order to localized your application
 
     <string name="rating_title">Feedback</string>
-    <string name="rating_message">Thank you for using this application, it would mean a lot to us if you took a minute to rate us at the App Store!.</string>
+    <string name="rating_message">Thank you for using %s, it would mean a lot to us if you took a minute to rate us at the App Store!.</string>
     <string name="rating_option_1">Rate now</string>
     <string name="rating_option_2">Don't remind me again</string>
     <string name="rating_option_3">Not now</string>
