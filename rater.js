@@ -24,10 +24,10 @@ Rater.data = {
 Rater.startUsageTimer = function(){
 	Rater.usageTimerInterval = setInterval(function() {
 	    Rater.data.timeUsed++;
-	    
+
 	    // Debugging
 	    // Ti.API.info(Rater.data.timeUsed + " seconds of app usage");
-	    
+
 	    // Check if the desired usage time has been reached
 	    if(Rater.data.timeUsed === Rater.appUsageInSeconds) {
 	    	// Pause the timer
@@ -52,13 +52,13 @@ Rater.initUsageCounter = function(){
 Rater.load = function(){
 	// Read the data
 	Rater.read();
-	
+
 	// Increase the launch count
 	Rater.data.launchCount++;
-	
+
 	// Init the usage counter
 	Rater.initUsageCounter();
-	
+
 	// Save the data
 	Rater.save();
 };
@@ -75,8 +75,9 @@ Rater.save = function(){
 };
 
 Rater.run = function(){
-	if(Rater.data.neverRemind || Rater.data.launchCount % Rater.appLaunches != 0) { return; }
 	
+	if(Rater.data.neverRemind || Rater.data.launchCount % Rater.appLaunches != 0) { return; }
+
 	Rater.openRateDialog();
 };
 
@@ -87,13 +88,22 @@ Rater.openRateDialog = function(){
 		buttonNames: [L("rating_option_1"), L("rating_option_2"), L("rating_option_3")],
 		cancel: 2
 	});
-	
+
 	a.addEventListener('click',function(e){
 		switch(e.index) {
 			case 0 : // rate
 				Rater.data.neverRemind = true;
 				Rater.save();
-				Ti.Platform.openURL("itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=" + Rater.appId);
+				
+				// detect android device 
+				if( Titanium.Platform.osname == 'android' ){
+					Ti.Platform.openURL("market://search?q=pname:" + Rater.appId);
+					
+				// detect iphone and ipad devices
+				}else{
+					Ti.Platform.openURL("itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=" + Rater.appId);
+				}
+				
 				break;
 			case 1 : // don't remind
 				Rater.data.neverRemind = true;
@@ -106,11 +116,11 @@ Rater.openRateDialog = function(){
 
 Rater.init = function(_appName, _appId){
 	Rater.load();
-	
+
 	// Set the default values
 	Rater.appName = _appName;
 	Rater.appId = _appId;
-	
+
 	Rater.run();
 };
 
