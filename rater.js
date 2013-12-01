@@ -100,8 +100,12 @@ Rater.openRateDialog = function(){
 					Ti.Platform.openURL("market://search?q=pname:" + Rater.appId);
 					
 				// detect iphone and ipad devices
-				}else{
-					Ti.Platform.openURL("itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=" + Rater.appId);
+				} else {
+					if (Ti.Platform.version < 7) {
+						Ti.Platform.openURL("itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=" + Rater.appId);
+					} else {
+						Ti.Platform.openURL("itms-apps://itunes.apple.com/app/doremi-zoo-my-first-piano/id" + Rater.appId);
+					}
 				}
 				
 				break;
