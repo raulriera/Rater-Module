@@ -104,7 +104,7 @@ Rater.openRateDialog = function(){
 					if (Ti.Platform.version < 7) {
 						Ti.Platform.openURL("itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=" + Rater.appId);
 					} else {
-						Ti.Platform.openURL("itms-apps://itunes.apple.com/app/doremi-zoo-my-first-piano/id" + Rater.appId);
+						Ti.Platform.openURL("itms-apps://itunes.apple.com/app/id" + Rater.appId);
 					}
 				}
 				
